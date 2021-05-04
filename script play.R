@@ -312,14 +312,16 @@ CST$PlayNumber <- ave(CST$ParticipantID, CST$ParticipantID,  FUN = seq_along)
 ################################################################################
 
 #configuring v-MAC Data
-#import raw data for 3A version of V-MAC
-VMAC3a <- read_csv("dataforscript/Online Norming Study_Ax1_Prolific - VMAC C3_April 20, 2021_09.30.csv")
-View(VMAC3a)
-VMAC3a <- read_csv("dataforscript/Online Norming Study_Ax1_Prolific - VMAC C3_April 20, 2021_09.30.csv", skip = 1)[-c(1),] 
-View(VMAC3a)
+#import raw data for 3A version of V-MAC and skip first row
+VMAC3a <- read_csv("C:/Users/ajratkheur/Desktop/2021/internship Erynn/norming study resources/dataforscript/Online Norming Study_Ax1_Prolific - VMAC C3_April 20, 2021_09.30.csv", skip = 1)[-c(1),] 
+#replace spaces with full stops
 names(VMAC3a) <- make.names(names(VMAC3a), unique = TRUE) 
+#rename ProlificID into ParticipantID
 VMAC3a <- rename(VMAC3a, ParticipantID=Please.enter.your.Prolific.ID.)
+#select relevant columns
 VMAC3a <- VMAC3a %>% select(7, 18:389)
+#check refining results
+View(VMAC3a)
 #insert column that says 3A and fills it
 
 
