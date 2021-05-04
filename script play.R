@@ -253,7 +253,7 @@ SST$ParticipantID <- gsub("'",'',SST$ParticipantID)
 DBT <- read_csv("C:/Users/ajratkheur/Desktop/2021/internship Erynn/norming study resources/DBT norm raw.csv")
 #Select the two only relevant columns 'TotalScore' & 'Name'
 DBT <- DBT %>% select(3,11)
-#specifcy where to look "DBT" and which column
+#specify where to look "DBT" and which column
 View(DBT)
 names(DBT) <- gsub("\\W", "", names(DBT))
 #rename Name to ParticipantID
@@ -263,6 +263,21 @@ DBT <- rename(DBT, ParticipantID=Name)
 DBT$ParticipantID <- gsub("'",'',DBT$ParticipantID)
 
 #select only rows with ParticipantIDs that start with 5 or 6
+DBT %>% 
+  filter(str_detect(ParticipantID, "5"))
+
+DBT %>% 
+  filter(str_detect(ParticipantID, "^5"))
+
+
+DBT %>% 
+  filter(str_detect(ParticipantID, "^5|^6"))
+
+View(DBT)
+
+#this approach currently does not work
+DBT <-filter(str_detect(ParticipantID, "^5|^6"))
+
 
 
 
