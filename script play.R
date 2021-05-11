@@ -120,10 +120,43 @@ names(VMAC3a) <- make.names(names(VMAC3a), unique = TRUE)
 #rename ProlificID into ParticipantID
 VMAC3a <- rename(VMAC3a, ParticipantID=Please.enter.your.Prolific.ID.)
 #select relevant columns
-VMAC3a <- VMAC3a %>% select(7, 18:389)
-#check refining results
-View(VMAC3a)
-#insert column that says 3A and fills it
+VMAC3a <- VMAC3a %>% select(18)
+#create new dataframe titled "vmac.colour" for a column filled with entries of 3A
+#use to rep function to enter 114 rows worth of 3A
+vmac.colour<-rep(c("3A"),times=114)
+#push it into a dataframe titled
+vmac.colour<-data.frame(vmac.colour)
+#check, if done properly there should only be one column titled "vmac.colour
+vmac.colour
+#use cbind function to add the two dataframes together into a new dataframe titled "vmac3a"
+vmac3a <-cbind(VMAC3a, vmac.colour)
+#check the new dataframe, there should now be two columns: one of them ParticipantID and one named vmac.colour
+#indication of participants who done the 3a version of the vmac now complete
+#now load in the full raw data of the vmac
+vmacfull <- read_csv("C:/Users/ajratkheur/Desktop/2021/internship Erynn/norming study resources/vmacfull.csv")
+#replace the apostrophes around the column headers
+names(vmacfull) <- gsub("\\W", "", names(vmacfull))
+#replacing spaces with periods are not necessary here and ParticipantID is already named correctly
+#replace spaces with full stops
+#select relevant columns
+vmacfull <- vmacfull %>% select(1,5:73)
+#now combine 3a vmac participants with full raw vmac data by ParticipantIDs
+vmacfull <- merge(vmacfull,vmac3a, by = "ParticipantID", all = TRUE)
+vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.x = TRUE) 
+vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.y = TRUE)  
+vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.x = TRUE, all.y = TRUE)
+
+
+vmacfull['vmac.colour'] <- NA
+
+vmacfull$vmac.colour 
+
+<- c("m", "m", "f", "f", "m")
+
+vmacfull <- merge(vmacfull,vmac3a, by = "ParticipantID", all = TRUE)
+Example <- merge(df1, df2, by = "col1", all = TRUE)
+
+dplyr::bind_rows(vmacfull, vmac3a)
 
 ##############################################################################################################################
 #standardising DDT raw data
