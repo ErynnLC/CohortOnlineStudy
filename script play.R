@@ -141,21 +141,30 @@ names(vmacfull) <- gsub("\\W", "", names(vmacfull))
 #select relevant columns
 vmacfull <- vmacfull %>% select(1,5:73)
 #now combine 3a vmac participants with full raw vmac data by ParticipantIDs
+
+#based on Erynn's original design and code, basically says keep both rows and columns
 vmacfull <- merge(vmacfull,vmac3a, by = "ParticipantID", all = TRUE)
+#combine and only keep rows
 vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.x = TRUE) 
+#combine and only keep columns this gets us closer but there are now only the 3a participants
 vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.y = TRUE)  
+#full dissected written out version of the Erynn's original code
 vmacfull <- merge(vmacfull, vmac3a, by = "ParticipantID", all.x = TRUE, all.y = TRUE)
 
+#adds a column full of zeros which is titled vmac.colour in complete raw vmac data
+vmacfull['vmac.colour'] <- 0
 
-vmacfull['vmac.colour'] <- NA
+#trial and error of creating new column using tidyverse
+vmacfull <- vmacfull %>% add_column(vmac.colour = NA)
+vmacfull1 <- merge(vmacfull,vmac3a, by = "ParticipantID", all = TRUE) #created two new columns of vmac.colour based on rows and columns and additional rows were added, indicating duplication of some sort
+vmacfull2 <- merge(vmacfull,vmac3a, by = "ParticipantID", "vmac.colour", all = TRUE) #created new column and now there is only 1 vmac.colour column but ParticipantID shifts into that column for the 3a participants
 
-vmacfull$vmac.colour 
 
-<- c("m", "m", "f", "f", "m")
+#brainstorm section
+vmacfull$vmac.colour= 0
 
 vmacfull <- merge(vmacfull,vmac3a, by = "ParticipantID", all = TRUE)
 Example <- merge(df1, df2, by = "col1", all = TRUE)
-
 dplyr::bind_rows(vmacfull, vmac3a)
 
 ##############################################################################################################################
