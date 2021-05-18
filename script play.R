@@ -97,6 +97,8 @@ DBT <- DBT %>%
   filter(str_detect(ParticipantID, "^5|^6"))
 #check data frame is properly refined
 View(DBT)
+#create play number variable that counts the number of time the games appear for each participant
+DBT$PlayNumber <- ave(DBT$ParticipantID, DBT$ParticipantID,  FUN = seq_along)
 
 ################################################################################
 #refining CST raw data
@@ -110,6 +112,8 @@ CST <- rename(CST,ParticipantID=subjectid)
 CST <- CST %>% select(4,9:10,15:22)
 #create play number variable that counts the number of time the games appear for each participant
 CST$PlayNumber <- ave(CST$ParticipantID, CST$ParticipantID,  FUN = seq_along)
+#merge DBT & SST by ParticipantID & PlayNumber
+DBT+CST <- merge(DBT,CST, by = c('ParticipantID','PlayNumber'), all= TRUE)
 ################################################################################
 
 #configuring v-MAC Data
@@ -168,8 +172,36 @@ Example <- merge(df1, df2, by = "col1", all = TRUE)
 dplyr::bind_rows(vmacfull, vmac3a)
 
 ##############################################################################################################################
-#standardising DDT raw data
+#standardizing DDT raw data
 #read in the DDT raw data
+DDT <- read_csv("C:/Users/ajratkheur/Desktop/2021/internship Erynn/norming study resources/DDT norm raw data.csv")
+#rename column 1 titled: ID to ParticipantID
+DDT <- rename(DDT,ParticipantID=ID)
+#replace all ' with spaces in the ParticipantID column
+DDT$ParticipantID <- gsub("'",'',DDT$ParticipantID) 
+#keep relevant columns
+DDT <- DDT %>% select(1,4:6)
+#select rows based on the ParticipantID column which have values that either start with 5 or 6
+DDT <- DDT %>% 
+  filter(str_detect(ParticipantID, "^5|^6")) #NOTICE might include IDs you may not want
+#create play number variable that counts the number of time the games appear for each participant
+DDT$PlayNumber <- ave(DDT$ParticipantID, DDT$ParticipantID,  FUN = seq_along)
+#merge DBT+CST & DDT by ParticipantID & PlayNumber
+DBT+CST+DDT <- merge(DBT+CST,DDT, by = c('ParticipantID','PlayNumber'), all= TRUE)
+##############################################################################################################################
+
+##############################################################################################################################
+#n-back raw data refinement section
+nback <- read_csv("C:/Users/ajratkheur/Desktop/2021/internship Erynn/norming study resources/n-back_raw.csv")
+#rename column 5 titled: subjecid to ParticipantID
+nback <- rename(nback,ParticipantID=subjectid)
+#keep relevant columns
+nback <- nback %>% select(5,9:49)
+#create play number variable that counts the number of time the games appear for each participant
+nback$PlayNumber <- ave(nback$ParticipantID, nback$ParticipantID,  FUN = seq_along)
+#merge DBT+CST & DDT by ParticipantID & PlayNumber
+DBT+CST+DDT+NBACK <- merge(DBT+CST+DDT,nback, by = c('ParticipantID','PlayNumber'), all= TRUE)
+##############################################################################################################################
 
 # export to csv
 write.csv(Ax1_tidy, "Ax1_Data_Tidy.csv", row.names = FALSE) #this removes built in R row numbers 
